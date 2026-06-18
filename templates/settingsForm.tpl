@@ -14,7 +14,7 @@
             $('#openAIREBrokerServiceSettingsForm').pkpHandler('$.pkp.controllers.form.AjaxFormHandler');
     {rdelim});
 </script>
-<form class="pkp_form" id="openAIREBrokerServiceSettingsForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="settings" save=true}">
+<form class="pkp_form" id="openAIREBrokerServiceSettingsForm" method="post" action="{url router=PKP\core\PKPApplication::ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="settings" save=true}">
     {csrf}
     {fbvFormArea id="openAIREBrokerServiceSettingsFormSubscriptionArea" title="plugins.generic.openAIREBrokerService.manager.settings.subscriptions"}
             {translate key="plugins.generic.openAIREBrokerService.manager.settings.subscriptions.description"}

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @file OpenAIREBrokerServiceSettingsForm.inc.php
+ * @file OpenAIREBrokerServiceSettingsForm.php
  *
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
@@ -10,7 +10,6 @@
  *
  * @brief Form for journal managers to modify OpenAIRE Broker Service plugin settings
  */
-// $Id$
 
 namespace APP\plugins\generic\openAIREBrokerService;
 
@@ -73,7 +72,7 @@ class OpenAIREBrokerServiceSettingsForm extends Form {
         $this->_data = array();
         $context = $this->_context;
         foreach (self::CONFIG_VARS as $configVar => $type) {
-            $this->_data[$configVar] = $context->getSetting($configVar);
+            $this->_data[$configVar] = $context->getData($configVar);
         }
     }
 
@@ -111,4 +110,3 @@ class OpenAIREBrokerServiceSettingsForm extends Form {
 
 }
 
-?>

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @file plugins/generic/openAIREBrokerService/controllers/grid/OpenAIREBrokerServiceGridCellProvider.inc.php
+ * @file plugins/generic/openAIREBrokerService/controllers/grid/OpenAIREBrokerServiceGridCellProvider.php
  *
  * Copyright (c) 2014-2020 Simon Fraser University
  * Copyright (c) 2003-2020 John Willinsky
@@ -41,4 +41,3 @@ class OpenAIREBrokerServiceGridCellProvider extends GridCellProvider {
 	}
 }
 
-?>

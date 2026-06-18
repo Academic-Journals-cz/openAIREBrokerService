@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @file plugins/generic/openAIREBrokerService/controllers/grid/OpenAIREBrokerServiceGridHandler.inc.php
+ * @file plugins/generic/openAIREBrokerService/controllers/grid/OpenAIREBrokerServiceGridHandler.php
  *
  * Copyright (c) 2014-2020 Simon Fraser University
  * Copyright (c) 2003-2020 John Willinsky
@@ -143,7 +143,7 @@ class OpenAIREBrokerServiceGridHandler extends GridHandler {
                         null,
                         'controllers/grid/gridCell.tpl',
                         $cellProvider,
-                        array('html' => true,'alignment' => COLUMN_ALIGNMENT_LEFT,
+                        array('html' => true,'alignment' => GridColumn::COLUMN_ALIGNMENT_LEFT,
 				'width' => 100)
         ));
     }

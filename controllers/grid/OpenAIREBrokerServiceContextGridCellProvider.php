@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @file plugins/generic/openAIREBrokerService/controllers/grid/OpenAIREBrokerServiceGridCellProvider.inc.php
+ * @file plugins/generic/openAIREBrokerService/controllers/grid/OpenAIREBrokerServiceContextGridCellProvider.php
  *
  * Copyright (c) 2014-2020 Simon Fraser University
  * Copyright (c) 2003-2020 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
- * @class OpenAIREBrokerServiceGridCellProvider
+ * @class OpenAIREBrokerServiceContextGridCellProvider
  * @ingroup plugins_generic_openAIREBrokerService
  *
  * @brief Class for a cell provider to display information about funder items
@@ -46,4 +46,3 @@ class OpenAIREBrokerServiceContextGridCellProvider extends GridCellProvider {
 	}        
 }
 
-?>

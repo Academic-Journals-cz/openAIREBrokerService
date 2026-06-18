@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @file plugins/generic/openAIREBrokerService/controllers/grid/OpenAIREBrokerServiceContextGridHandler.inc.php
+ * @file plugins/generic/openAIREBrokerService/controllers/grid/OpenAIREBrokerServiceContextGridHandler.php
  *
  * Copyright (c) 2014-2020 Simon Fraser University
  * Copyright (c) 2003-2020 John Willinsky
@@ -108,7 +108,7 @@ class OpenAIREBrokerServiceContextGridHandler extends \PKP\controllers\grid\Grid
                         __('common.id'),
                         'controllers/grid/gridCell.tpl',
                         $cellProvider,
-                        array('alignment' => COLUMN_ALIGNMENT_LEFT,
+                        array('alignment' => GridColumn::COLUMN_ALIGNMENT_LEFT,
                     'width' => 4)
                 )
         );
@@ -120,7 +120,7 @@ class OpenAIREBrokerServiceContextGridHandler extends \PKP\controllers\grid\Grid
                         null,
                         $cellProvider,
                         array('html' => true,
-                    'alignment' => COLUMN_ALIGNMENT_LEFT, 'width' => 25)
+                    'alignment' => GridColumn::COLUMN_ALIGNMENT_LEFT, 'width' => 25)
                 )
         );
         $this->addColumn(
@@ -130,7 +130,7 @@ class OpenAIREBrokerServiceContextGridHandler extends \PKP\controllers\grid\Grid
                         null,
                         null,
                         $cellProvider,
-                        array('alignment' => COLUMN_ALIGNMENT_LEFT,
+                        array('alignment' => GridColumn::COLUMN_ALIGNMENT_LEFT,
                     'width' => 5)
                 )
         );
@@ -140,7 +140,7 @@ class OpenAIREBrokerServiceContextGridHandler extends \PKP\controllers\grid\Grid
                         null,
                         'controllers/grid/gridCell.tpl',
                         $cellProvider,
-                        array('alignment' => COLUMN_ALIGNMENT_LEFT,
+                        array('alignment' => GridColumn::COLUMN_ALIGNMENT_LEFT,
                     'width' => 8)
         ));
 //        $this->addColumn(new GridColumn(
@@ -156,7 +156,7 @@ class OpenAIREBrokerServiceContextGridHandler extends \PKP\controllers\grid\Grid
                         null,
                         'controllers/grid/gridCell.tpl',
                         $cellProvider,
-                        array('html' => true, 'alignment' => COLUMN_ALIGNMENT_LEFT, 'width' => 20)
+                        array('html' => true, 'alignment' => GridColumn::COLUMN_ALIGNMENT_LEFT, 'width' => 20)
         ));
     }
 

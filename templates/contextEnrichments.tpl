@@ -10,6 +10,6 @@
 <tab id="openAireEnrichments" label="{translate key="plugins.generic.openAIREBrokerService"}">
         <p>{translate key="plugins.generic.openAIREBrokerService.article.description"}</p>
     
-        {capture assign=openAIREBrokerServiceContextGridUrl}{url router=$smarty.const.ROUTE_COMPONENT component="plugins.generic.openAIREBrokerService.controllers.grid.OpenAIREBrokerServiceContextGridHandler" op="fetchGrid" escape=false}{/capture}
+        {capture assign=openAIREBrokerServiceContextGridUrl}{url router=PKP\core\PKPApplication::ROUTE_COMPONENT component="plugins.generic.openAIREBrokerService.controllers.grid.OpenAIREBrokerServiceContextGridHandler" op="fetchGrid" escape=false}{/capture}
 	{load_url_in_div id="openAIREBrokerServiceContextGridContainer" url=$openAIREBrokerServiceContextGridUrl}
 </tab>

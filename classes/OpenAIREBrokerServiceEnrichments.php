@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @file plugins/generic/openAIREBrokerService/classes/OpenAIREBrokerServiceEnrichments.inc.php
+ * @file plugins/generic/openAIREBrokerService/classes/OpenAIREBrokerServiceEnrichments.php
  *
  * Copyright (c) 2014-2020 Simon Fraser University
  * Copyright (c) 2003-2020 John Willinsky
@@ -97,8 +97,8 @@ class OpenAIREBrokerServiceEnrichments {
         $context = $request->getContext();
         $subscriptions = array();
         foreach ($this->_enrichs as $enrich) {
-            if ($context->getSetting($enrich)) {
-                $subscriptions[$enrich] = $context->getSetting($enrich);
+            if ($context->getData($enrich)) {
+                $subscriptions[$enrich] = $context->getData($enrich);
             }
         }
 
@@ -240,4 +240,3 @@ class OpenAIREBrokerServiceEnrichments {
 
 }
 
-?>

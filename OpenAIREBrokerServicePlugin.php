@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @file plugins/generic/openAIREBrokerService/OpenAIREBrokerServicePlugin.inc.php
+ * @file OpenAIREBrokerServicePlugin.php
  *
  * Copyright (c) 2014-2020 Simon Fraser University
  * Copyright (c) 2003-2020 John Willinsky
@@ -15,6 +15,7 @@
 namespace APP\plugins\generic\openAIREBrokerService;
 
 use PKP\core\JSONMessage;
+use APP\core\Application;
 use APP\template\TemplateManager;
 use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\AjaxModal;
@@ -59,10 +60,16 @@ class OpenAIREBrokerServicePlugin extends GenericPlugin {
 
             Hook::add('Schema::get::context', [$this, 'addToSchema']);
             Hook::add('Template::Settings::website', array($this, 'callbackShowWebsiteSettingsTabs'));
-            Hook::add('Template::Workflow::Publication', array($this, 'addToPublicationForms'));
 
             Hook::add('LoadComponentHandler', array($this, 'setupGridHandler'));
             Hook::add('LoadComponentHandler', array($this, 'setupContextGridHandler'));
+
+            // OJS 3.5: the editorial workflow is now a Vue single-page app and the
+            // former server-side hook "Template::Workflow::Publication" was removed
+            // (Hook::add() on it throws an exception). Article-level enrichments are
+            // therefore injected into the editorial dashboard via a front-end script.
+            // See addWorkflowEnrichmentsTab() and js/workflowEnrichments.js.
+            Hook::add('TemplateManager::display', array($this, 'addWorkflowEnrichmentsTab'));
         }
         return $success;
     }
@@ -154,17 +161,71 @@ class OpenAIREBrokerServicePlugin extends GenericPlugin {
     }
 
     /**
-     * Insert article's enrichments in the publication tabs
+     * Inject article-level OpenAIRE enrichments into the editorial workflow.
+     *
+     * OJS 3.5 rebuilt the editorial workflow as a Vue single-page application
+     * (template "dashboard/editors.tpl") and removed the old
+     * "Template::Workflow::Publication" Smarty hook. The supported way to extend
+     * the new workflow (shared by OJS 3.5 and 3.6) is the front-end extension API
+     * on "pkp.registry": a global Vue component is registered and the "workflow"
+     * Pinia store is extended through its "extender" (getMenuItems / getPrimaryItems).
+     *
+     * Here we only load the script and pass it the data it needs:
+     *  - gridUrlBase: the component-router URL of the existing enrichments grid
+     *    (the submission id is appended on the client, because the open submission
+     *    can change without a full page reload in the SPA);
+     *  - label / errorMessage: localized strings used by the Vue component.
+     *
+     * The script (js/workflowEnrichments.js) adds a single "OpenAIRE enrichments"
+     * entry under the Publication navigation (enrichments are per article, not per
+     * version) and renders a panel that reuses the existing read-only grid
+     * (OpenAIREBrokerServiceGridHandler). It does not depend on the user being an
+     * assigned editor; access is still enforced server-side by the grid handler.
+     * The journal-level grid (Settings > Website > OpenAIRE Enrichments) shows the
+     * same per-article data and does not depend on this script.
+     *
+     * @param string $hookName "TemplateManager::display"
+     * @param array  $args     [TemplateManager $templateMgr, string &$template, string &$output]
+     * @return bool false to let other handlers run
      */
-    function addToPublicationForms($hookName, $params) {
-        $smarty = & $params[1];
-        $output = & $params[2];
+    function addWorkflowEnrichmentsTab($hookName, $args) {
+        $templateMgr = $args[0];
+        $template = $args[1];
 
-        $output .= sprintf(
-                '<tab id="openAireEnrichmentsInWorkflow" label="%s">%s</tab>',
-                __('plugins.generic.openAIREBrokerService'),
-                $smarty->fetch($this->getTemplateResource('articleEnrichments.tpl'))
+        // Only act on the editorial dashboard, which hosts the workflow SPA.
+        if ($template !== 'dashboard/editors.tpl') {
+            return false;
+        }
+
+        $request = Application::get()->getRequest();
+
+        $gridUrlBase = $request->getDispatcher()->url(
+            $request,
+            Application::ROUTE_COMPONENT,
+            null,
+            'plugins.generic.openAIREBrokerService.controllers.grid.OpenAIREBrokerServiceGridHandler',
+            'fetchGrid'
         );
+
+        // Data for the front-end script. Defined before the script so it is always
+        // available by the time the workflow store/component evaluate it.
+        $templateMgr->addJavaScript(
+            'openAIREBrokerServiceWorkflowData',
+            'window.OpenAIREBrokerServiceConfig = ' . json_encode([
+                'gridUrlBase' => $gridUrlBase,
+                'label' => __('plugins.generic.openAIREBrokerService'),
+                'errorMessage' => __('common.error'),
+            ]) . ';',
+            ['inline' => true, 'contexts' => ['backend'], 'priority' => TemplateManager::STYLE_SEQUENCE_NORMAL]
+        );
+
+        // Registered last so that pkp.registry (from the core bundle) is available.
+        $templateMgr->addJavaScript(
+            'openAIREBrokerServiceWorkflow',
+            $request->getBaseUrl() . '/' . $this->getPluginPath() . '/js/workflowEnrichments.js',
+            ['inline' => false, 'contexts' => ['backend'], 'priority' => TemplateManager::STYLE_SEQUENCE_LAST]
+        );
+
         return false;
     }
 
@@ -173,7 +234,6 @@ class OpenAIREBrokerServicePlugin extends GenericPlugin {
      */
     function getActions($request, $verb) {
         $router = $request->getRouter();
-        import('lib.pkp.classes.linkAction.request.AjaxModal');
         return array_merge(
                 $this->getEnabled() ? array(
             new LinkAction(
